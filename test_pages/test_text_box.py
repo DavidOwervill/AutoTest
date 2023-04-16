@@ -52,6 +52,9 @@ class TestTextBox:
         assert f"Current Address :{LocatorsTextBox.test_current_address}" == self.driver.find_element(by=By.XPATH,
                                                                                                       value=LocatorsTextBox.ca_check).text
         assert f"Permananet Address :{LocatorsTextBox.test_permanent_address}" == self.driver.find_element(by=By.XPATH,
+
+
+
                                                                                                            value=LocatorsTextBox.pa_check).text
 
 
