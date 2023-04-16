@@ -1,13 +1,5 @@
 import pytest
-from selenium.webdriver.common.by import By
-import time
-
-
-class LocatorsBrokenLinks:
-    image_tools_qa = "//*[@id='app']/div/div/div[2]/div[2]/div[2]/img[1]"
-    broken_image_tools_qa = "//*[@id='app']/div/div/div[2]/div[2]/div[2]/img[2]"
-    valid_links = "//*[@id='app']/div/div/div[2]/div[2]/div[2]/a[1]"
-    broken_links = "//*[@id='app']/div/div/div[2]/div[2]/div[2]/a[2]"
+from src.pages.broken_link.text_broken_link import BrokenLinks
 
 
 @pytest.mark.usefixtures("set_up_chrome")
@@ -19,33 +11,22 @@ class TestBrokenLink:
                           "https://demoqa.com/",
                           "http://the-internet.herokuapp.com/status_codes/500")
                          ])
-    def test_broken_link(self, link, link_assert_1, link_assert_2, link_assert_3, link_assert_4):
+    def test_bl(self, link, link_assert_1, link_assert_2, link_assert_3, link_assert_4):
         """
         Данная функция работает со страничкой https://demoqa.com/broken.
         Для начала, проверяет наличие картинок путем сверки href с заданной и затем делает скриншот.
         Далее нажимает на ссылки и проверяет правильность перехода по нужной ссылке.
         """
-
         self.driver.get(link)
-        assert link_assert_1 == self.driver.find_element(by=By.XPATH,
-                                                         value=LocatorsBrokenLinks.image_tools_qa).get_attribute(
-            "src")
-        assert link_assert_2 == self.driver.find_element(by=By.XPATH,
-                                                         value=LocatorsBrokenLinks.broken_image_tools_qa).get_attribute(
-            "src")
-        self.driver.execute_script("window.scrollTo(0, 250);")
-        self.driver.find_element(by=By.XPATH, value=LocatorsBrokenLinks.valid_links).click()
-        time.sleep(5)
-        url_correct = self.driver.current_url
-        self.driver.back()
-        assert link_assert_3 == url_correct
-        self.driver.execute_script("window.scrollTo(0, 250);")
-        self.driver.find_element(by=By.XPATH, value=LocatorsBrokenLinks.broken_links).click()
-        time.sleep(5)
-        url_uncorrect = self.driver.current_url
-        assert link_assert_4 == url_uncorrect
-        self.driver.back()
+        self.broken_link = BrokenLinks(self.driver)
+        assert self.broken_link.first_link_check() == link_assert_1
+        assert self.broken_link.second_link_check() == link_assert_2
+        self.broken_link.scroll_to()
+        self.broken_link.find_valid_link()
+        assert self.broken_link.valid_link_check() == link_assert_3
+        self.broken_link.scroll_to()
+        assert self.broken_link.broken_link_check() == link_assert_4
 
 
 if __name__ == "__main__":
-    TestBrokenLink().test_broken_link()
+    TestBrokenLink().test_bl()

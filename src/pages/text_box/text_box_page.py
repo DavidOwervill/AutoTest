@@ -17,10 +17,7 @@ class TextBoxPage:
     ca_check = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/form/div[6]/div/p[3]"
     permanent_address = "permanentAddress"
     pa_check = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/form/div[6]/div/p[4]"
-    test_user_name = "Full Name Test Write"
-    test_user_email = "testmail@gmail.com"
-    test_current_address = "Test Current Address"
-    test_permanent_address = 'Test Permanent Address'
+
 
     def add_user_name(self, user_name):
         self.driver.find_element(by=By.ID, value=TextBoxPage.user_name).send_keys(user_name)
