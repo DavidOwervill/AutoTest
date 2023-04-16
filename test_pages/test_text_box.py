@@ -1,61 +1,31 @@
-from selenium.webdriver import Keys
-from selenium.webdriver.common.by import By
+from src.pages.text_box.text_box_page import TextBoxPage
+from generators.text_box_gen import TextBoxGen
 import pytest
-import time
-
-
-class LocatorsTextBox:
-    user_name = "userName"
-    user_name_check = "//*[@id='name']"
-    user_email = "userEmail"
-    user_email_check = "//*[@id='email']"
-    current_address = "currentAddress"
-    ca_check = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/form/div[6]/div/p[3]"
-    permanent_address = "permanentAddress"
-    pa_check = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/form/div[6]/div/p[4]"
-    test_user_name = "Full Name Test Write"
-    test_user_email = "testmail@gmail.com"
-    test_current_address = "Test Current Address"
-    test_permanent_address = 'Test Permanent Address'
 
 
 @pytest.mark.usefixtures("set_up_chrome")
 class TestTextBox:
-    def test_text_box(self):
+    @pytest.mark.parametrize("link, user_name, user_email, current_address, permanent_address ",
+                             [("https://demoqa.com/text-box", TextBoxGen.name_gen, TextBoxGen.email_gen,
+                               TextBoxGen.current_address_gen, TextBoxGen.permanent_address_gen)
+                              ])
+    def test_text_box(self, link, user_name, user_email, current_address, permanent_address):
         """
         Данная функция работает со страничкой https://demoqa.com/text-box.
-        Сначала заполняем форму следующими значениями -
-        Full Name Test Write,
-        testmail@gmail.com,
-        Test Current Address,
-        Test Permanent Address.
+        Сначала заполняем форму значениями из генератора,
         Затем осуществляем последовательную проверку внесенных значений.
         """
-        self.driver.get("https://demoqa.com/text-box")
-        self.driver.find_element(by=By.ID, value=LocatorsTextBox.user_name).send_keys(LocatorsTextBox.test_user_name)
-        time.sleep(3)
-        self.driver.find_element(by=By.ID, value=LocatorsTextBox.user_email).send_keys(LocatorsTextBox.test_user_email)
-        time.sleep(3)
-        self.driver.find_element(by=By.ID, value=LocatorsTextBox.current_address).send_keys(
-            LocatorsTextBox.test_current_address)
-        time.sleep(3)
-        self.driver.find_element(by=By.ID, value=LocatorsTextBox.permanent_address).send_keys(
-            LocatorsTextBox.test_permanent_address)
-        time.sleep(3)
-        self.driver.find_element(by=By.TAG_NAME, value='body').send_keys(Keys.END)
-        self.driver.find_element(by=By.ID, value="submit").click()
-        time.sleep(10)
-        assert f"Name:{LocatorsTextBox.test_user_name}" == self.driver.find_element(by=By.XPATH,
-                                                                                    value=LocatorsTextBox.user_name_check).text
-        assert f"Email:{LocatorsTextBox.test_user_email}" == self.driver.find_element(by=By.XPATH,
-                                                                                      value=LocatorsTextBox.user_email_check).text
-        assert f"Current Address :{LocatorsTextBox.test_current_address}" == self.driver.find_element(by=By.XPATH,
-                                                                                                      value=LocatorsTextBox.ca_check).text
-        assert f"Permananet Address :{LocatorsTextBox.test_permanent_address}" == self.driver.find_element(by=By.XPATH,
-
-
-
-                                                                                                           value=LocatorsTextBox.pa_check).text
+        self.driver.get(link)
+        self.text_box = TextBoxPage(self.driver)
+        self.text_box.add_user_name(user_name)
+        self.text_box.add_user_email(user_email)
+        self.text_box.add_current_address(current_address)
+        self.text_box.add_permanent_address(permanent_address)
+        self.text_box.add_values()
+        assert self.text_box.assert_values_user_name() == f"Name:{user_name}"
+        assert self.text_box.assert_values_user_email() == f"Email:{user_email}"
+        assert self.text_box.assert_values_current_address() == f"Current Address :{current_address}"
+        assert self.text_box.assert_values_permanent_address() == f"Permananet Address :{permanent_address}"
 
 
 if __name__ == "__main__":
