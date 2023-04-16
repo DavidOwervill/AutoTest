@@ -27,7 +27,7 @@ class BooksOpenPage:
                                  value=BooksOpenPage.back_to_book_store_loc).click()
         time.sleep(3)
 
-    def find_second_book_and_go_back(self):
+    def find_second_book(self):
         self.driver.find_element(by=By.ID, value="see-book-Learning JavaScript Design Patterns").click()
         time.sleep(3)
 
@@ -41,16 +41,16 @@ class BooksOpenPage:
         self.driver.find_element(by=By.TAG_NAME, value='body').send_keys(Keys.END)
         time.sleep(3)
 
-    def find_third_book_and_go_back(self):
+    def find_third_book(self):
         self.driver.find_element(by=By.ID, value="see-book-Designing Evolvable Web APIs with ASP.NET").click()
         time.sleep(3)
 
-    def return_check_isnb_see(self):
+    def return_check_isnb_design(self):
         return self.driver.find_element(by=By.XPATH, value=BooksOpenPage.designing_evolvable_isbn).text
 
     # back_to_book_store_with_up
 
-    def find_four_book_and_go_back(self):
+    def find_four_book(self):
         self.driver.find_element(by=By.ID, value="see-book-Speaking JavaScript").click()
         time.sleep(3)
 
@@ -59,7 +59,7 @@ class BooksOpenPage:
 
     # back_to_book_store_with_up
 
-    def find_five_book_and_go_back(self):
+    def find_five_book(self):
         self.driver.find_element(by=By.ID, value="see-book-You Don't Know JS").click()
         time.sleep(3)
 
