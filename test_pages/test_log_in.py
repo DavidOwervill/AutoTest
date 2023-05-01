@@ -1,40 +1,27 @@
 from selenium.webdriver.common.by import By
 import pytest
 import time
-
-
-class LogInVars:
-    # Перечень используемых локаторов в виде переменных
-    # XPATH
-    log_in_button = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div[1]/div[2]/button"
-    log_in_check = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/form/div[4]/div[1]/button"
-    control_user_name = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div[1]/div[2]/label[2]"
-    log_in_failed = "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/form/div[5]/div/p"
+from src.pages.text_log_in.text_log_in import LogInVars
 
 
 @pytest.mark.usefixtures("set_up_chrome")
-class TestLogInClass:
-    @pytest.mark.parametrize("username, password", [
-        ('TestUserName', "David123456789!")
+class TestLogIn:
+    @pytest.mark.parametrize("link, username, password", [
+        ('https://demoqa.com/books', 'TestUserName', "David123456789!")
     ])
-    def test_log_in(self, username, password):
+    def test_log_in_po(self, link, username, password):
         """
         Данная функция работает на страничке - https://demoqa.com/books.
         Вводятся данные для возможности за логиниться,
         Затем проводится проверка авторизации путем сверки НикНейма на страничке https://demoqa.com/books
         """
-        self.driver.get("https://demoqa.com/books")
-        self.driver.find_element(by=By.XPATH,
-                                 value=LogInVars.log_in_button).click()
-        time.sleep(3)
-        self.driver.find_element(by=By.ID, value="userName").send_keys(username)
-        time.sleep(3)
-        self.driver.find_element(by=By.ID, value="password").send_keys(password)
-        time.sleep(3)
-        self.driver.find_element(by=By.XPATH,
-                                 value=LogInVars.log_in_check).click()
-        time.sleep(3)
-        assert username == self.driver.find_element(by=By.XPATH, value=LogInVars.control_user_name).text
+        self.driver.get(link)
+        self.log_in = LogInVars(self.driver)
+        self.log_in.log_in_button_click()
+        self.log_in.user_name_val_send(username)
+        self.log_in.password_val_send(password)
+        self.log_in.log_in_button_check()
+        assert username == self.log_in.assert_control_user_name()
 
     @pytest.mark.skip
     def test_log_in_failed(self, username: str = 11111, password: str = 22222222):
@@ -64,4 +51,4 @@ class TestLogInClass:
 
 
 if __name__ == '__main__':
-    TestLogInClass().test_log_in()
+    TestLogIn().test_log_in_po()
