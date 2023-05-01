@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 import pytest
 import time
-from src.pages.text_log_in.text_log_in import LogInVars
+from src.pages.text_log_in.text_log_in import LogInSRC
 
 
 @pytest.mark.usefixtures("set_up_chrome")
@@ -16,7 +16,7 @@ class TestLogIn:
         Затем проводится проверка авторизации путем сверки НикНейма на страничке https://demoqa.com/books
         """
         self.driver.get(link)
-        self.log_in = LogInVars(self.driver)
+        self.log_in = LogInSRC(self.driver)
         self.log_in.log_in_button_click()
         self.log_in.user_name_val_send(username)
         self.log_in.password_val_send(password)
@@ -34,18 +34,18 @@ class TestLogIn:
         """
         self.driver.get("https://demoqa.com/books")
         self.driver.find_element(by=By.XPATH,
-                                 value=LogInVars.log_in_button).click()
+                                 value=LogInSRC.log_in_button).click()
         time.sleep(3)
         self.driver.find_element(by=By.ID, value="userName").send_keys(username)
         time.sleep(3)
         self.driver.find_element(by=By.ID, value="password").send_keys(password)
         time.sleep(3)
         self.driver.find_element(by=By.XPATH,
-                                 value=LogInVars.log_in_check).click()
+                                 value=LogInSRC.log_in_check).click()
         time.sleep(3)
         try:
             self.assertEqual("Invalid username or password!",
-                             self.driver.find_element(by=By.XPATH, value=LogInVars.log_in_failed))
+                             self.driver.find_element(by=By.XPATH, value=LogInSRC.log_in_failed))
         except AssertionError as e:
             self.verificationErrors.append(str(e))
 
